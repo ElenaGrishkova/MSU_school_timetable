@@ -1,5 +1,6 @@
 package shedule;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -14,7 +15,10 @@ public enum Classes {
     EN_11("11 ЕН", 3, Arrays.asList("11 ЕН-1", "11 ЕН-2")),
     IF_11("11 ИФ", 4, Arrays.asList("11 ИФ-1", "11 ИФ-2")),
     SE_11("11 СЭ", 5, Arrays.asList("11 СЭ-1", "11 СЭ-2")),
-    CLASS_8("8 клacc", 0, Arrays.asList("8 кл"))
+    CLASS_8("8 класс", 0, Arrays.asList("8 кл")),
+    ALL_10("10 ALL", 0, new ArrayList<String>()),
+    ALL_11("11 ALL", 0, new ArrayList<String>())
+
     ;
 
     private static List<Classes> class_10 = Arrays.asList(EM_10, ENJ_10, EN_10, IF_10, SP_10);

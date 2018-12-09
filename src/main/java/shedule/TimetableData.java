@@ -94,6 +94,25 @@ public class TimetableData {
                     }
                     addCellData(classID, groupName, period, lesson, dayTable, card.getRoomID());
                 }
+            } else {
+                String groupNameSeminar = String.valueOf(Integer.valueOf(seminargroup) %  10);
+                Boolean is8 = false;
+                Boolean is10 = false;
+                Boolean is11 = false;
+                for (String classID : classIDs) {
+                    String className = classesIndex.get(classID).getName();
+                    Classes clazz = Classes.getByAlias(className);
+                    if (Classes.CLASS_8.equals(clazz) && !is8) {
+                        addCellData(classID, groupNameSeminar, period, lesson, dayTable, card.getRoomID());
+                        is8 = true;
+                    } else if (Classes.is11(clazz.getGeneral()) && !is11) {
+                        addCellData(Classes.ALL_11, groupNameSeminar, period, lesson, dayTable, card.getRoomID(), "");
+                        is11 = true;
+                    } else if (Classes.is10(clazz.getGeneral()) && !is10) {
+                        addCellData(Classes.ALL_10, groupNameSeminar, period, lesson, dayTable, card.getRoomID(), "");
+                        is10 = true;
+                    }
+                }
             }
 //            }
         }
@@ -122,7 +141,12 @@ public class TimetableData {
     private void addCellData(String classID, String groupName, Integer period, Lesson lesson,
                              Map<KeyCell, List<CellData>> dayTable, String roomID) throws Exception {
         String className = classesIndex.get(classID).getName();
-        KeyCell key = new KeyCell(period, Classes.getByAlias(className));
+        addCellData(Classes.getByAlias(className), groupName, period, lesson, dayTable, roomID, className);
+    }
+
+    private void addCellData(Classes clazz, String groupName, Integer period, Lesson lesson,
+                             Map<KeyCell, List<CellData>> dayTable, String roomID, String className) throws Exception {
+        KeyCell key = new KeyCell(period, clazz);
         String teacherName = "";
         if (lesson.getTeacherids().contains(",")) {
             String[] strings = lesson.getTeacherids().split(",");
@@ -234,6 +258,24 @@ public class TimetableData {
         processNewLine(result1);
         processNewLine(result2);
         return result1.append("\n").append(result2).toString();
+    }
+
+    public String printCellDataSeminar(List<CellData> list) throws Exception {
+        Boolean isFirst = true;
+        StringBuilder result = new StringBuilder();
+        for(CellData cellData : list) {
+            if (!isFirst) {
+                result.append(" / ");
+            }
+            result.append(cellData.getSubjectName()).append(" гр. ").append(cellData.getGroupName()).
+                    append(" ").append(cellData.getTeacherName());
+            String room = roomIndex.get(cellData.getRoomID()).getName();
+            if (! SPORT_ROOM.equals(room)) {
+                result.append(" к. ").append(room);
+            }
+            isFirst = false;
+        }
+        return result.toString();
     }
 
     private void processNewLine(StringBuilder s) {

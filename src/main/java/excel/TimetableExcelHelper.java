@@ -1,13 +1,17 @@
 package excel;
 
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import shedule.CellData;
 import shedule.Classes;
 import shedule.KeyCell;
 import shedule.TimetableData;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -24,10 +28,42 @@ public class TimetableExcelHelper {
     private Integer totalOpenQnt = 0;
     private Integer totalCloseQnt = 0;
 
-    public ExcelReport createReport1() throws Exception {
-        report.printDayHeader("AAA");
+    public ExcelReport createReport1(TimetableData inData, Map<String, Cell> cellIndex_8, Map<String, Cell> cellIndex_10_11) throws Exception {
+        this.inData = inData;
+        Map<String, Map<KeyCell, List<CellData>>> dataMap = inData.getTimetableByDay();
+        for (Map.Entry<String, Map<KeyCell, List<CellData>>> entry : dataMap.entrySet()) {
+            String dayName = inData.getDayNameByID(entry.getKey());
+            if (Arrays.asList("Каждый день", "В любой день").contains(dayName)) continue;
+
+            for (Map.Entry<KeyCell, List<CellData>> cell : entry.getValue().entrySet()) {
+                Boolean isSeminar = Arrays.asList(Classes.ALL_10, Classes.ALL_11).contains(cell.getKey().getClazz());
+                String newValue;
+                if (isSeminar) {
+                    newValue = inData.printCellDataSeminar(cell.getValue());
+                } else {
+                    newValue = inData.printCellData(cell.getValue());
+                }
+                Classes clazz = cell.getKey().getClazz();
+                if (Classes.CLASS_8.equals(clazz)) {
+                    updateCellValue(dayName, cell.getKey(), newValue, cellIndex_8);
+                } else {
+                    updateCellValue(dayName, cell.getKey(), newValue, cellIndex_10_11);
+                }
+            }
+            report.newDay();
+        }
+
         return report;
     }
+
+    private void updateCellValue(String dayName, KeyCell key, String newValue, Map<String, Cell> cellIndex) {
+        StringBuilder builder = new StringBuilder();
+        builder.append(dayName).append("_").append(key.getClazz().getGeneral()).append("_").append(key.getPeriod());
+        String keyString = builder.toString();
+        Cell cell = cellIndex.remove(keyString);
+        cell.setCellValue(newValue);
+    }
+
     public ExcelReport createReport(TimetableData inData) throws Exception {
         this.inData = inData;
         Map<String, Map<KeyCell, List<CellData>>> dataMap = inData.getTimetableByDay();
@@ -39,6 +75,7 @@ public class TimetableExcelHelper {
             report.printPeriodHeader(inData.getPeriodIndex(), 0);
             report.printPeriodHeader(inData.getPeriodIndex(), TimetableExcelReport.DIST);
             for (Map.Entry<KeyCell, List<CellData>> cell : entry.getValue().entrySet()) {
+                Boolean isSeminar = Arrays.asList(Classes.ALL_10, Classes.ALL_11).contains(cell.getKey().getClazz());
                 report.printCellData(cell.getKey(), inData.printCellData(cell.getValue()));
             }
             report.newDay();
@@ -96,8 +133,23 @@ public class TimetableExcelHelper {
         return report;
     }
 
+    public Map<String, Cell> createCellIndex(Workbook wb, int sheetIndex) {
+        Map<String, Cell> index = new HashMap<String, Cell>();
+        Sheet sheet = wb.getSheetAt(sheetIndex);
+        for(Row row : sheet) {
+            for(Cell cell : row) {
+                try {
+                    index.put(cell.getStringCellValue(), cell);
+                } catch (IllegalStateException ex) {
+                    //do nothing
+                }
+            }
+        }
+        return index;
+    }
+
     public String writeFile(ExcelReport report) throws IOException {
-        String fileName = FILE_OUTPUT_NAME + System.currentTimeMillis() + EXTENTION;
+        String fileName = getFileName();
 //        fileName = fileName.replace("\\", "/");
 //        fileName = fileName.replace("//", "/");
 //        fileName = fileName.replace("/", File.separator);
@@ -109,4 +161,22 @@ public class TimetableExcelHelper {
 
         return fileName;
     }
+
+    public String getFileName() {
+        return FILE_OUTPUT_NAME + System.currentTimeMillis() + EXTENTION;
+    }
+
+    public void clearUnused(Map<String, Cell> cellIndex) {
+        for (Map.Entry<String, Cell> entry : cellIndex.entrySet()) {
+            String key = entry.getKey();
+            Cell cell = entry.getValue();
+            if (key.contains("ALL")) {
+                cell.getRow().setZeroHeight(true);
+            }
+            if (key.contains("_")) {
+                cell.setCellValue("");
+            }
+        }
+    }
+
 }
