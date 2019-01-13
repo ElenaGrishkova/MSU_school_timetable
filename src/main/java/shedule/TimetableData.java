@@ -225,10 +225,11 @@ public class TimetableData {
             Boolean isFullClass2Class = Classes.checkAllIn(classNames);
 
             CellData cellDataTmp = entry.getValue().get(0);
-            String room = roomIndex.get(cellDataTmp.getRoomID()).getName();
+            Classroom room = roomIndex.get(cellDataTmp.getRoomID());
+            String roomName = room != null ? room.getName() : "";
             result2.append(cellDataTmp.getTeacherName());
-            if (! SPORT_ROOM.equals(room)) {
-                result2.append(" к. ").append(room);
+            if (! SPORT_ROOM.equals(roomName)) {
+                result2.append(" к. ").append(roomName);
             }
             if (isFullClass2group && isFullClass2Class) {
                 result1.append(cellDataTmp.getSubjectName());

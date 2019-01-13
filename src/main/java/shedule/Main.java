@@ -16,7 +16,7 @@ public class Main {
 //        InputStreamReader inputFile = new InputStreamReader(Main.class.getClassLoader()
 //                .getResourceAsStream("123.xml"), "windows-1251");
         InputStreamReader inputFile = new InputStreamReader(Main.class.getClassLoader()
-                .getResourceAsStream("9week.xml"), "windows-1251");
+                .getResourceAsStream("new.xml"), "windows-1251");
 
         Scanner scan = new Scanner(inputFile);
         StringBuilder xml = new StringBuilder();
