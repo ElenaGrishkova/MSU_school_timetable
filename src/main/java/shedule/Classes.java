@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public enum Classes {
+    CLASS_8("8 класс", 0, Arrays.asList("8 кл")),
     EM_10("10 ЭКМАТ", 1,  Arrays.asList("10 ЭМ-1", "10 ЭМ-2")),
     ENJ_10("10 ИНЖ", 2, Arrays.asList("10 ИНЖ-1", "10 ИНЖ-2")),
     EN_10("10 ЕН", 3, Arrays.asList("10 ЕН-1", "10 ЕН-2")),
@@ -15,7 +16,6 @@ public enum Classes {
     EN_11("11 ЕН", 3, Arrays.asList("11 ЕН-1", "11 ЕН-2")),
     IF_11("11 ИФ", 4, Arrays.asList("11 ИФ-1", "11 ИФ-2")),
     SE_11("11 СЭ", 5, Arrays.asList("11 СЭ-1", "11 СЭ-2")),
-    CLASS_8("8 класс", 0, Arrays.asList("8 кл")),
     ALL_10("10 ALL", 0, new ArrayList<String>()),
     ALL_11("11 ALL", 0, new ArrayList<String>())
 
@@ -74,5 +74,9 @@ public enum Classes {
 
     public Short getIndex() {
         return index;
+    }
+
+    public List<String> getAliases() {
+        return aliases;
     }
 }

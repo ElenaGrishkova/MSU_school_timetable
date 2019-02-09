@@ -16,7 +16,7 @@ public class Main {
 //        InputStreamReader inputFile = new InputStreamReader(Main.class.getClassLoader()
 //                .getResourceAsStream("123.xml"), "windows-1251");
         InputStreamReader inputFile = new InputStreamReader(Main.class.getClassLoader()
-                .getResourceAsStream("new.xml"), "windows-1251");
+                .getResourceAsStream("18week.xml"), "windows-1251");
 
         Scanner scan = new Scanner(inputFile);
         StringBuilder xml = new StringBuilder();
@@ -41,6 +41,7 @@ public class Main {
         helper.createReport1(timetableData, cellIndex_8, cellIndex_10_11);
         helper.clearUnused(cellIndex_8);
         helper.clearUnused(cellIndex_10_11);
+        helper.addStudentsList(wb, timetableData);
 
         String fileName = helper.getFileName();
         FileOutputStream out = new FileOutputStream(fileName);

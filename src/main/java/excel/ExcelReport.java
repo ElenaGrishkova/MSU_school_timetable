@@ -20,7 +20,7 @@ public abstract class ExcelReport {
     public static final String XLSX_EXTENSION = ".xlsx";
     private Font smallBold;
 
-    public SXSSFWorkbook wb = new SXSSFWorkbook(1000); //Рабочая книга. Сюда сохраняются все изменения перед отправкой в файл
+    public Workbook wb = new SXSSFWorkbook(1000); //Рабочая книга. Сюда сохраняются все изменения перед отправкой в файл
     protected Sheet sheet; //Лист
     protected final List<Sheet> sheetList; //Лист
     protected int currentSheet = 0; //Текущий лист
@@ -85,6 +85,13 @@ public abstract class ExcelReport {
         currentSheet++;
     }
 
+    public void newSheet(String sheetName){
+        sheet = wb.createSheet(sheetName);
+        sheetList.add(sheet);
+        currentRow = 0;
+        currentSheet++;
+    }
+
     /**
      * Сбрасываем всё, что наделали в файл
      *
@@ -135,9 +142,9 @@ public abstract class ExcelReport {
         createCell((short) column, styleTitle, value);
     }
 
-    public void dispose() {
-        wb.dispose();
-    }
+//    public void dispose() {
+//        wb.dispose();
+//    }
 
     /**
      * Конструктор ячейки

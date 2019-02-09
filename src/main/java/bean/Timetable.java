@@ -43,6 +43,13 @@ public class Timetable {
         return classrooms.classrooms;
     }
 
+    public List<StudentSubject> getStudentSubjects() {
+        return studentsubjects.studentsubjects;
+    }
+    public List<Student> getStudents() {
+        return students.students;
+    }
+
     @XStreamAlias("periods")
     Periods periods;
     @XStreamAlias("daysdefs")
@@ -61,6 +68,10 @@ public class Timetable {
     Cards cards;
     @XStreamAlias("classrooms")
     Classrooms classrooms;
+    @XStreamAlias("studentsubjects")
+    StudentSubjects studentsubjects;
+    @XStreamAlias("students")
+    Students students;
 
 
     class Periods {
@@ -99,6 +110,14 @@ public class Timetable {
     class Classrooms {
         @XStreamImplicit(itemFieldName = "classroom")
         List<Classroom> classrooms = new ArrayList<Classroom>();
+    }
+    class StudentSubjects {
+        @XStreamImplicit(itemFieldName = "studentsubject")
+        List<StudentSubject> studentsubjects = new ArrayList<StudentSubject>();
+    }
+    class Students {
+        @XStreamImplicit(itemFieldName = "student")
+        List<Student> students = new ArrayList<Student>();
     }
 
 

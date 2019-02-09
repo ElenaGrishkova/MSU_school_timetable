@@ -1,11 +1,15 @@
 package excel;
 
 import bean.Period;
+import bean.Student;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
 import shedule.Classes;
 import shedule.KeyCell;
+import shedule.TimetableData;
 
 import java.util.Map;
+import java.util.Set;
 
 public class TimetableExcelReport extends ExcelReport {
 
@@ -36,6 +40,10 @@ public class TimetableExcelReport extends ExcelReport {
 
     public TimetableExcelReport() {
 
+    }
+
+    public TimetableExcelReport(Workbook wb) {
+        this.wb = wb;
     }
 
     public TimetableExcelReport(String sheetName) {
@@ -115,6 +123,37 @@ public class TimetableExcelReport extends ExcelReport {
 
     public void newDay() {
         currentRow += DIST + DIST;
+    }
+
+    public void printStudentInfo(TimetableData inData, String alias) {
+        Set<Student> studentSet = inData.getClassName2studentIndex().get(alias);
+        for (Student student : studentSet) {
+            row = sheet.createRow(currentRow);
+            createCell(0, "RIGHT_CENTER_THIN", String.valueOf(currentRow));
+            createCell((short) 1, "LEFT_CENTER_THIN", student.getName());
+            createCell((short) 2, "CENTER_CENTER_THIN", alias);
+            createCell((short) 3, "CENTER_CENTER_THIN", inData.getEnglishGroup(student.getId()));
+            createCell((short) 4, "CENTER_CENTER_THIN", inData.getSecondLang(student.getId()));
+            createCell((short) 5, "CENTER_CENTER_THIN", inData.getSecondLangGroup(student.getId()));
+            currentRow++;
+        }
+    }
+
+    public void printStudentHeader() {
+        row = sheet.createRow(currentRow);
+        createCell((short) 0, "RIGHT_CENTER_THIN", "№");
+        createCell((short) 1, "LEFT_CENTER_THIN", "ФИО");
+        createCell((short) 2, "CENTER_CENTER_THIN", "Подпрофиль");
+        createCell((short) 3, "CENTER_CENTER_THIN", "Подгруппа");
+        createCell((short) 4, "CENTER_CENTER_THIN", "Второй ин. язык");
+        createCell((short) 5, "CENTER_CENTER_THIN", "гр.");
+        sheet.setColumnWidth(0, getColumnWidthInPoints(3));
+        sheet.setColumnWidth(1, getColumnWidthInPoints(40));
+        sheet.setColumnWidth(2, getColumnWidthInPoints(12));
+        sheet.setColumnWidth(3, getColumnWidthInPoints(12));
+        sheet.setColumnWidth(4, getColumnWidthInPoints(21));
+        sheet.setColumnWidth(5, getColumnWidthInPoints(3));
+        currentRow++;
     }
 
 //    public void setWidths() {

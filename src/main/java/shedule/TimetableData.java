@@ -8,6 +8,8 @@ import java.util.*;
 public class TimetableData {
     public static final String FULL_CLASS = "Весь класс";
     public static final String SPORT_ROOM = "Спортивный зал";
+    public static final String ENGLISH = "Английский язык";
+    public static final List<String> SECOND_LANG = Arrays.asList("Немецкий язык", "Французский язык", "Китайский язык", "Итальянский язык", "Испанский язык");
     public static final Integer MAX_LINE_SIZE = 48;
 
     public Map<String, Map<KeyCell, List<CellData>>> getTimetableByDay() {
@@ -20,6 +22,10 @@ public class TimetableData {
 
     public Map<Integer, Period> getPeriodIndex() {
         return periodIndex;
+    }
+
+    public Map<String, Set<Student>> getClassName2studentIndex() {
+        return className2studentIndex;
     }
 
     private Map<String, Map<KeyCell, List<CellData>>> timetableByDay = new TreeMap<String, Map<KeyCell, List<CellData>>>(new Comparator<String>() {
@@ -37,6 +43,8 @@ public class TimetableData {
     private Map<String, Class> classesIndex = new HashMap<String, Class>();
     private Map<String, Group> groupIndex = new HashMap<String, Group>();
     private Map<String, Classroom> roomIndex = new HashMap<String, Classroom>();
+    private Map<String, List<StudentSubject>> student2studentSubjectIndex = new HashMap<String, List<StudentSubject>>();
+    private Map<String, Set<Student>> className2studentIndex = new HashMap<String, Set<Student>>();
 
     public TimetableData(Timetable timetable) {
         this.timetable = timetable;
@@ -324,9 +332,64 @@ public class TimetableData {
         for (Classroom classroom : timetable.getClassrooms()) {
             roomIndex.put(classroom.getId(), classroom);
         }
+        for (StudentSubject studentSubject : timetable.getStudentSubjects()) {
+            String studentId = studentSubject.getStudentid();
+            List<StudentSubject> studentSubjects = student2studentSubjectIndex.get(studentId);
+            if (studentSubjects == null) {
+                studentSubjects = new LinkedList<StudentSubject>();
+                student2studentSubjectIndex.put(studentId, studentSubjects);
+            }
+            studentSubjects.add(studentSubject);
+        }
+        for (Student student : timetable.getStudents()) {
+            String classId = student.getClassid();
+            Class clazz = classesIndex.get(classId);
+            Set<Student> students = className2studentIndex.get(clazz.getName());
+            if (students == null) {
+                students = new TreeSet<Student>();
+                className2studentIndex.put(clazz.getName(), students);
+            }
+            students.add(student);
+        }
     }
 
     public String getDayNameByID (String id) {
         return dayIndex.get(id).getName();
+    }
+
+    public String getEnglishGroup(String studentId) {
+        List<StudentSubject> studentSubjects = student2studentSubjectIndex.get(studentId);
+        for(StudentSubject studentSubject : studentSubjects) {
+            String subjectID = studentSubject.getSubjectid();
+            Subject subject = subjectIndex.get(subjectID);
+            if (subject.getName().equals(ENGLISH)) {
+                return String.valueOf(Integer.valueOf(studentSubject.getSeminargroup()) % 10);
+            }
+        }
+        return "";
+    }
+
+    public String getSecondLang(String studentId) {
+        List<StudentSubject> studentSubjects = student2studentSubjectIndex.get(studentId);
+        for(StudentSubject studentSubject : studentSubjects) {
+            String subjectID = studentSubject.getSubjectid();
+            Subject subject = subjectIndex.get(subjectID);
+            if (SECOND_LANG.contains(subject.getName())) {
+                return subject.getName();
+            }
+        }
+        return "";
+    }
+
+    public String getSecondLangGroup(String studentId) {
+        List<StudentSubject> studentSubjects = student2studentSubjectIndex.get(studentId);
+        for(StudentSubject studentSubject : studentSubjects) {
+            String subjectID = studentSubject.getSubjectid();
+            Subject subject = subjectIndex.get(subjectID);
+            if (SECOND_LANG.contains(subject.getName())) {
+                return String.valueOf(Integer.valueOf(studentSubject.getSeminargroup()) % 10);
+            }
+        }
+        return "";
     }
 }

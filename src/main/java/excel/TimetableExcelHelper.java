@@ -179,4 +179,16 @@ public class TimetableExcelHelper {
         }
     }
 
+    public void addStudentsList(Workbook wb, TimetableData inData) {
+        TimetableExcelReport report = new TimetableExcelReport(wb);
+        for(Classes clazz : Classes.values()) {
+            if (Arrays.asList(Classes.ALL_10, Classes.ALL_11).contains(clazz)) continue;
+            report.newSheet(clazz.getGeneral());
+            report.printStudentHeader();
+            for (String alias : clazz.getAliases()) {
+                report.printStudentInfo(inData, alias);
+            }
+
+        }
+    }
 }
