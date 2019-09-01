@@ -8,6 +8,7 @@ import shedule.Classes;
 import shedule.KeyCell;
 import shedule.TimetableData;
 
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Set;
 
@@ -84,11 +85,11 @@ public class TimetableExcelReport extends ExcelReport {
         row = sheet.createRow(currentRow + DIST);
         createCell((short) 0, "CENTER_CENTER_THIN", "№");
         createCell((short) 1, "CENTER_CENTER_THIN", "Время");
-        createCell((short) 2, "CENTER_CENTER_THIN", Classes.M_11.getGeneral());
+        createCell((short) 2, "CENTER_CENTER_THIN", Classes.EM_11.getGeneral());
         createCell((short) 3, "CENTER_CENTER_THIN", Classes.ENJ_11.getGeneral());
         createCell((short) 4, "CENTER_CENTER_THIN", Classes.EN_11.getGeneral());
         createCell((short) 5, "CENTER_CENTER_THIN", Classes.IF_11.getGeneral());
-        createCell((short) 6, "CENTER_CENTER_THIN", Classes.SE_11.getGeneral());
+        createCell((short) 6, "CENTER_CENTER_THIN", Classes.SP_11.getGeneral());
 
         //currentRow ++;
     }
@@ -105,7 +106,7 @@ public class TimetableExcelReport extends ExcelReport {
 
     public void printCellData(KeyCell key, String s) {
         Classes clazz = key.getClazz();
-        if (Classes.CLASS_8.equals(clazz)) return;
+        if (Arrays.asList(Classes.CLASS_8, Classes.CLASS_9).contains(clazz)) return;
         row = sheet.getRow(currentRow + key.getPeriod()  +
                 (Classes.is11(clazz.getGeneral()) ? DIST : 0));
         //TODO такого не должно быть. Удалить
@@ -127,6 +128,7 @@ public class TimetableExcelReport extends ExcelReport {
 
     public void printStudentInfo(TimetableData inData, String alias) {
         Set<Student> studentSet = inData.getClassName2studentIndex().get(alias);
+        if (studentSet == null) return;
         for (Student student : studentSet) {
             row = sheet.createRow(currentRow);
             createCell(0, "RIGHT_CENTER_THIN", String.valueOf(currentRow));

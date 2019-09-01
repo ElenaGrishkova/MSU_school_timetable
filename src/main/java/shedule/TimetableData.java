@@ -110,7 +110,7 @@ public class TimetableData {
                 for (String classID : classIDs) {
                     String className = classesIndex.get(classID).getName();
                     Classes clazz = Classes.getByAlias(className);
-                    if (Classes.CLASS_8.equals(clazz) && !is8) {
+                    if (Arrays.asList(Classes.CLASS_8, Classes.CLASS_9).contains(clazz) && !is8) {
                         addCellData(classID, groupNameSeminar, period, lesson, dayTable, card.getRoomID());
                         is8 = true;
                     } else if (Classes.is11(clazz.getGeneral()) && !is11) {
@@ -278,7 +278,7 @@ public class TimetableData {
             }
             result.append(cellData.getSubjectName()).append(" гр. ").append(cellData.getGroupName()).
                     append(" ").append(cellData.getTeacherName());
-            String room = roomIndex.get(cellData.getRoomID()).getName();
+            String room = cellData.getRoomID().isEmpty() ? "" : roomIndex.get(cellData.getRoomID()).getName();
             if (! SPORT_ROOM.equals(room)) {
                 result.append(" к. ").append(room);
             }
@@ -359,6 +359,7 @@ public class TimetableData {
 
     public String getEnglishGroup(String studentId) {
         List<StudentSubject> studentSubjects = student2studentSubjectIndex.get(studentId);
+        if (studentSubjects == null) return "";
         for(StudentSubject studentSubject : studentSubjects) {
             String subjectID = studentSubject.getSubjectid();
             Subject subject = subjectIndex.get(subjectID);
@@ -371,6 +372,7 @@ public class TimetableData {
 
     public String getSecondLang(String studentId) {
         List<StudentSubject> studentSubjects = student2studentSubjectIndex.get(studentId);
+        if (studentSubjects == null) return "";
         for(StudentSubject studentSubject : studentSubjects) {
             String subjectID = studentSubject.getSubjectid();
             Subject subject = subjectIndex.get(subjectID);
@@ -383,6 +385,7 @@ public class TimetableData {
 
     public String getSecondLangGroup(String studentId) {
         List<StudentSubject> studentSubjects = student2studentSubjectIndex.get(studentId);
+        if (studentSubjects == null) return "";
         for(StudentSubject studentSubject : studentSubjects) {
             String subjectID = studentSubject.getSubjectid();
             Subject subject = subjectIndex.get(subjectID);

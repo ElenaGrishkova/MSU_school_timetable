@@ -10,10 +10,9 @@ import shedule.KeyCell;
 import shedule.TimetableData;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public class TimetableExcelHelper {
 
@@ -28,7 +27,7 @@ public class TimetableExcelHelper {
     private Integer totalOpenQnt = 0;
     private Integer totalCloseQnt = 0;
 
-    public ExcelReport createReport1(TimetableData inData, Map<String, Cell> cellIndex_8, Map<String, Cell> cellIndex_10_11) throws Exception {
+    public ExcelReport createReport1(TimetableData inData, Map<String, Cell> cellIndex_8, Map<String, Cell> cellIndex_9, Map<String, Cell> cellIndex_10_11) throws Exception {
         this.inData = inData;
         Map<String, Map<KeyCell, List<CellData>>> dataMap = inData.getTimetableByDay();
         for (Map.Entry<String, Map<KeyCell, List<CellData>>> entry : dataMap.entrySet()) {
@@ -46,7 +45,9 @@ public class TimetableExcelHelper {
                 Classes clazz = cell.getKey().getClazz();
                 if (Classes.CLASS_8.equals(clazz)) {
                     updateCellValue(dayName, cell.getKey(), newValue, cellIndex_8);
-                } else {
+                } else if (Classes.CLASS_9.equals(clazz)) {
+                    updateCellValue(dayName, cell.getKey(), newValue, cellIndex_9);
+                } else   {
                     updateCellValue(dayName, cell.getKey(), newValue, cellIndex_10_11);
                 }
             }
@@ -88,7 +89,7 @@ public class TimetableExcelHelper {
             report.printDayHeader2(dayName);
             for (Map.Entry<KeyCell, List<CellData>> cell : entry.getValue().entrySet()) {
                 Classes clazz = cell.getKey().getClazz();
-                if (Classes.CLASS_8.equals(clazz)) {
+                if (Arrays.asList(Classes.CLASS_8, Classes.CLASS_9).contains(clazz)) {
                     report.printCellData2(cell.getKey(), inData.printCellData(cell.getValue()));
                 }
             }
@@ -163,7 +164,8 @@ public class TimetableExcelHelper {
     }
 
     public String getFileName() {
-        return FILE_OUTPUT_NAME + System.currentTimeMillis() + EXTENTION;
+        DateFormat dateFormat = new SimpleDateFormat("_dd-MM-yyyy_HH-mm-ss");
+        return FILE_OUTPUT_NAME + dateFormat.format(new Date()) + EXTENTION;
     }
 
     public void clearUnused(Map<String, Cell> cellIndex) {

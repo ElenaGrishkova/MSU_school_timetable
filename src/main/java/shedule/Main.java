@@ -1,11 +1,12 @@
 package shedule;
 
-import bean.*;
+import bean.Timetable;
 import com.thoughtworks.xstream.XStream;
 import excel.TimetableExcelHelper;
-import org.apache.poi.ss.usermodel.*;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStreamReader;
@@ -48,9 +49,11 @@ public class Main {
                .getResourceAsStream("template.xlsx"));
         TimetableExcelHelper helper = new TimetableExcelHelper();
         Map<String, Cell> cellIndex_8 = helper.createCellIndex(wb, 0);
-        Map<String, Cell> cellIndex_10_11 = helper.createCellIndex(wb, 1);
-        helper.createReport1(timetableData, cellIndex_8, cellIndex_10_11);
+        Map<String, Cell> cellIndex_9 = helper.createCellIndex(wb, 1);
+        Map<String, Cell> cellIndex_10_11 = helper.createCellIndex(wb, 2);
+        helper.createReport1(timetableData, cellIndex_8, cellIndex_9, cellIndex_10_11);
         helper.clearUnused(cellIndex_8);
+        helper.clearUnused(cellIndex_9);
         helper.clearUnused(cellIndex_10_11);
         helper.addStudentsList(wb, timetableData);
 
