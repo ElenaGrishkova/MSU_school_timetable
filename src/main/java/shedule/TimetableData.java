@@ -390,6 +390,9 @@ public class TimetableData {
             String subjectID = studentSubject.getSubjectid();
             Subject subject = subjectIndex.get(subjectID);
             if (SECOND_LANG.contains(subject.getName())) {
+                if ("-".equals(studentSubject.getSeminargroup())) {
+                    return "";
+                }
                 return String.valueOf(Integer.valueOf(studentSubject.getSeminargroup()) % 10);
             }
         }
