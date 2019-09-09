@@ -80,7 +80,7 @@ public class TimetableData {
                         addCellData(classID, group.getName(), period, lesson, dayTable, card.getRoomID());
                     }
                 }
-            } else if ( classIDs.length <= 4) {
+            } else if ( classIDs.length <= 5) {
                 String groupNameSeminar = String.valueOf(Integer.valueOf(seminargroup) %  10) + " группа";
                 Map<String, String> class2group = new HashMap<String, String>();
                 for (String groupID : groupIDs) {
