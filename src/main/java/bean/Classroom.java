@@ -10,6 +10,9 @@ public class Classroom {
     @XStreamAlias("name")
     @XStreamAsAttribute
     private String name;
+    @XStreamAlias("short")
+    @XStreamAsAttribute
+    private String shorty;
 
     public String getId() {
         return id;
@@ -25,5 +28,13 @@ public class Classroom {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getShorty() {
+        return shorty;
+    }
+
+    public void setShorty(String shorty) {
+        this.shorty = shorty;
     }
 }

@@ -19,4 +19,12 @@ public class Subject {
     @XStreamAlias("name")
     @XStreamAsAttribute
     private String name;
+
+    @XStreamAlias("short")
+    @XStreamAsAttribute
+    private String shorty;
+
+    public String getShorty() {
+        return shorty;
+    }
 }

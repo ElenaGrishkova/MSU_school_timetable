@@ -1,5 +1,9 @@
 package excel;
 
+import bean.Card;
+import bean.ImportCard;
+import bean.Lesson;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
@@ -191,6 +195,110 @@ public class TimetableExcelHelper {
                 report.printStudentInfo(inData, alias);
             }
 
+        }
+    }
+
+    public void getLessons(Sheet sheet, TimetableData timetableData) {
+        Row headerRow = sheet.createRow(0);
+        createCell(headerRow, 0, "ID");
+        createCell(headerRow, 1, "Предмет");
+        createCell(headerRow, 2, "Предмет сокращенно");
+        createCell(headerRow, 3, "Класс");
+        createCell(headerRow, 4, "Преподаватель");
+        createCell(headerRow, 5, "Наименование в журнале 1");
+        createCell(headerRow, 6, "Наименование в журнале 2");
+        createCell(headerRow, 7, "Наименование в журнале 3");
+
+        int i = 1;
+        for (Lesson lesson : timetableData.getTimetable().getLessons()) {
+            String[] teachers = lesson.getTeacherids().split(",");
+            for (String teacherIDs : teachers) {
+                Row currentRow = sheet.createRow(i);
+                createCell(currentRow, 0, lesson.getId());
+                String subjectName = timetableData.getSubjectIndex().get(lesson.getSubjectid()).getName();
+                if (!lesson.getSeminargroup().isEmpty()) {
+                    subjectName += " гр." + Integer.valueOf(lesson.getSeminargroup()) % 10;
+                }
+                createCell(currentRow, 1, subjectName);
+                createCell(currentRow, 2, timetableData.getSubjectIndex().get(lesson.getSubjectid()).getShorty());
+
+                StringBuilder classValue = new StringBuilder();
+                String[] classes = lesson.getClassids().split(",");
+                for (String classIDs : classes) {
+                    if (classValue.length() > 0) {
+                        classValue.append(",");
+                    }
+                    classValue.append(timetableData.getClassesIndex().get(classIDs).getName());
+                }
+                createCell(currentRow, 3, classValue.toString());
+                createCell(currentRow, 4, timetableData.getTeacherIndex().get(teacherIDs).getName());
+                i++;
+            }
+        }
+    }
+
+    private void createCell(Row row, int i, String value) {
+        Cell cell = row.createCell(i);
+        cell.setCellValue(value);
+    }
+
+    private String getCellValue(Row row, int i) {
+        Cell cell = row.getCell(i);
+        if (cell == null) return null;
+        return cell.getStringCellValue();
+    }
+
+    public void processCards(Sheet sheetOut, Sheet sheetIn, TimetableData timetableData) {
+        List<ImportCard> importCards = new LinkedList<>();
+        for (int i = 1; i < sheetIn.getLastRowNum() + 1; i++) {
+            Row currRow = sheetIn.getRow(i);
+            String lessonID = currRow.getCell(0).getStringCellValue();
+            String teacher = currRow.getCell(4).getStringCellValue();
+            String extName1 = getCellValue(currRow, 5); //Наименование в журнале 1
+            String extName2 = getCellValue(currRow, 6); //Наименование в журнале 2
+            String extName3 = getCellValue(currRow, 7); //Наименование в журнале 3
+
+            processExtName(extName1, lessonID, teacher, timetableData, importCards);
+            processExtName(extName2, lessonID, teacher, timetableData, importCards);
+            processExtName(extName3, lessonID, teacher, timetableData, importCards);
+        }
+        Collections.sort(importCards);
+        int num = 1;
+        for (ImportCard importCard : importCards) {
+            Row currRow = sheetOut.createRow(num);
+            createCell(currRow, 0, importCard.getTime());
+            createCell(currRow, 1, importCard.getSubject());
+            createCell(currRow, 2, importCard.getTeacher());
+            createCell(currRow, 3, importCard.getRoom());
+            num ++;
+        }
+    }
+
+    private void processExtName(String extName, String lessonID, String teacher, TimetableData timetableData, List<ImportCard> importCards) {
+        if (extName == null || extName.isEmpty()) return;
+        List<Card> cardList = timetableData.getCardListIndex().get(lessonID);
+        if (cardList == null) return;
+        for (Card card : cardList) {
+            ImportCard importCard = new ImportCard();
+            String tm = String.format("%s %s - %s",
+                    timetableData.getDayNameByID(card.getDays()),
+                    timetableData.getPeriodIndex().get(card.getPeriod()).getStarttime(),
+                    timetableData.getPeriodIndex().get(card.getPeriod()).getEndtime()
+            );
+            importCard.setTimeNum(new StringBuilder(card.getDays()).reverse().append(card.getPeriod()).toString());
+            importCard.setTime(tm);
+            importCard.setSubject(extName);
+            importCard.setTeacher(teacher);
+            String room = "";
+            if (card.getRoomID() != null && ! card.getRoomID().isEmpty()) {
+                room = timetableData.getRoomIndex().get(card.getRoomID()).getShorty();
+            }
+            if (StringUtils.isNumeric(room)) {
+                room = "Б." + room;
+            }
+            importCard.setRoom(room);
+
+            importCards.add(importCard);
         }
     }
 }

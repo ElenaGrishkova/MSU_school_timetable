@@ -16,18 +16,6 @@ public class TimetableData {
         return timetableByDay;
     }
 
-    public Map<String, Daysdef> getDayIndex() {
-        return dayIndex;
-    }
-
-    public Map<Integer, Period> getPeriodIndex() {
-        return periodIndex;
-    }
-
-    public Map<String, Set<Student>> getClassName2studentIndex() {
-        return className2studentIndex;
-    }
-
     private Map<String, Map<KeyCell, List<CellData>>> timetableByDay = new TreeMap<String, Map<KeyCell, List<CellData>>>(new Comparator<String>() {
         //обратная сортировка
         public int compare(String o1, String o2) {
@@ -45,13 +33,14 @@ public class TimetableData {
     private Map<String, Classroom> roomIndex = new HashMap<String, Classroom>();
     private Map<String, List<StudentSubject>> student2studentSubjectIndex = new HashMap<String, List<StudentSubject>>();
     private Map<String, Set<Student>> className2studentIndex = new HashMap<String, Set<Student>>();
+    private Map<String, List<Card>> cardListIndex = new HashMap<>();
 
     public TimetableData(Timetable timetable) {
         this.timetable = timetable;
+        createIndexes();
     }
 
     public void process() throws Exception {
-        createIndexes();
         for (Daysdef day : timetable.getDaysdefs()) {
             timetableByDay.put(day.getDays(), new HashMap<KeyCell, List<CellData>>());
         }
@@ -334,22 +323,18 @@ public class TimetableData {
         }
         for (StudentSubject studentSubject : timetable.getStudentSubjects()) {
             String studentId = studentSubject.getStudentid();
-            List<StudentSubject> studentSubjects = student2studentSubjectIndex.get(studentId);
-            if (studentSubjects == null) {
-                studentSubjects = new LinkedList<StudentSubject>();
-                student2studentSubjectIndex.put(studentId, studentSubjects);
-            }
+            List<StudentSubject> studentSubjects = student2studentSubjectIndex.computeIfAbsent(studentId, k -> new LinkedList<>());
             studentSubjects.add(studentSubject);
         }
         for (Student student : timetable.getStudents()) {
             String classId = student.getClassid();
             Class clazz = classesIndex.get(classId);
-            Set<Student> students = className2studentIndex.get(clazz.getName());
-            if (students == null) {
-                students = new TreeSet<Student>();
-                className2studentIndex.put(clazz.getName(), students);
-            }
+            Set<Student> students = className2studentIndex.computeIfAbsent(clazz.getName(), k -> new TreeSet<>());
             students.add(student);
+        }
+        for (Card card : timetable.getCards()) {
+            List<Card> cardList = cardListIndex.computeIfAbsent(card.getLessonid(), k -> new LinkedList<>());
+            cardList.add(card);
         }
     }
 
@@ -397,5 +382,45 @@ public class TimetableData {
             }
         }
         return "";
+    }
+
+    public Map<String, Daysdef> getDayIndex() {
+        return dayIndex;
+    }
+
+    public Map<Integer, Period> getPeriodIndex() {
+        return periodIndex;
+    }
+
+    public Map<String, Set<Student>> getClassName2studentIndex() {
+        return className2studentIndex;
+    }
+
+    public Timetable getTimetable() {
+        return timetable;
+    }
+
+    public Map<String, Subject> getSubjectIndex() {
+        return subjectIndex;
+    }
+
+    public Map<String, Teacher> getTeacherIndex() {
+        return teacherIndex;
+    }
+
+    public Map<String, Class> getClassesIndex() {
+        return classesIndex;
+    }
+
+    public Map<String, List<Card>> getCardListIndex() {
+        return cardListIndex;
+    }
+
+    public Map<String, Classroom> getRoomIndex() {
+        return roomIndex;
+    }
+
+    public Map<String, Lesson> getLessonIndex() {
+        return lessonIndex;
     }
 }

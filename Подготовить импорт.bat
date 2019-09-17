@@ -8,5 +8,5 @@ set CLASSPATH=%CP%;%CLASSPATH%
 
 chcp 866
 rem start application
-java  shedule.Main "new.xml" -fill_template%*
+java  shedule.Main "new.xml" -prepare_import%*
 pause;

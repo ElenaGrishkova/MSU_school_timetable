@@ -26,6 +26,12 @@ public class Teacher {
     @XStreamAlias("firstname")
     @XStreamAsAttribute
     private String firstname;
+    @XStreamAlias("name")
+    @XStreamAsAttribute
+    private String name;
 
 
+    public String getName() {
+        return name;
+    }
 }
