@@ -1,4 +1,4 @@
-package shedule;
+package schedule;
 
 public class KeyCell {
 

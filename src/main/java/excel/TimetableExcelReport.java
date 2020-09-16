@@ -4,9 +4,9 @@ import bean.Period;
 import bean.Student;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.util.CellRangeAddress;
-import shedule.Classes;
-import shedule.KeyCell;
-import shedule.TimetableData;
+import schedule.Classes;
+import schedule.KeyCell;
+import schedule.TimetableData;
 
 import java.util.Arrays;
 import java.util.Map;

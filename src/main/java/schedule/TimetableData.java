@@ -1,4 +1,4 @@
-package shedule;
+package schedule;
 
 import bean.*;
 import bean.Class;
@@ -16,12 +16,8 @@ public class TimetableData {
         return timetableByDay;
     }
 
-    private Map<String, Map<KeyCell, List<CellData>>> timetableByDay = new TreeMap<String, Map<KeyCell, List<CellData>>>(new Comparator<String>() {
-        //обратная сортировка
-        public int compare(String o1, String o2) {
-            return o2.compareTo(o1);
-        }
-    });
+    //обратная сортировка
+    private Map<String, Map<KeyCell, List<CellData>>> timetableByDay = new TreeMap<>(Comparator.reverseOrder());
     private Timetable timetable;
     private Map<String, Lesson> lessonIndex = new HashMap<String, Lesson>();
     private Map<String, Daysdef> dayIndex = new HashMap<String, Daysdef>();

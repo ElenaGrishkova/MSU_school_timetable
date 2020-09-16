@@ -8,5 +8,5 @@ set CLASSPATH=%CP%;%CLASSPATH%
 
 chcp 866
 rem start application
-java  shedule.Main "new.xml" -get_lessons%*
+java  schedule.Main "asc.xml" -get_lessons%*
 pause;

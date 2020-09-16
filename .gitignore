@@ -1,0 +1,6 @@
+*.iml
+.idea
+/target/
+/asc.xml
+/MSU_school_timetable.zip
+/output*.xlsx

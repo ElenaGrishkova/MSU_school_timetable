@@ -1,4 +1,4 @@
-package shedule;
+package schedule;
 
 import bean.Timetable;
 import com.thoughtworks.xstream.XStream;

@@ -1,4 +1,4 @@
-package shedule;
+package schedule;
 
 public class CellData extends KeyCell implements Comparable<CellData>{
     public static final String GROUP_1 = "1 группа";

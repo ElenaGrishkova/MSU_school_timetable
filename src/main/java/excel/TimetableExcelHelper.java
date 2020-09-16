@@ -8,10 +8,10 @@ import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
-import shedule.CellData;
-import shedule.Classes;
-import shedule.KeyCell;
-import shedule.TimetableData;
+import schedule.CellData;
+import schedule.Classes;
+import schedule.KeyCell;
+import schedule.TimetableData;
 
 import java.io.IOException;
 import java.text.DateFormat;

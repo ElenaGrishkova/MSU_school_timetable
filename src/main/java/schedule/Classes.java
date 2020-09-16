@@ -1,4 +1,4 @@
-package shedule;
+package schedule;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -7,7 +7,7 @@ import java.util.List;
 public enum Classes {
     CLASS_8("8 класс", 0, Arrays.asList("8 кл")),
     CLASS_9("9 класс", 0, Arrays.asList("9 кл")),
-    EM_10("10 ЭКМАТ", 1,  Arrays.asList("10 МАТ-1", "10 МАТ-2")),
+    EM_10("10 ЭКМАТ", 1,  Arrays.asList("10 ЭМ-1", "10 ЭМ-2")),
     ENJ_10("10 ИНЖ", 2, Arrays.asList("10 ИНЖ-1", "10 ИНЖ-2")),
     EN_10("10 ЕН", 3, Arrays.asList("10 ЕН-1", "10 ЕН-2")),
     IF_10("10 ИФ", 4, Arrays.asList("10 ИФ-1", "10 ИФ-2")),
@@ -17,7 +17,7 @@ public enum Classes {
     ENJ_11("11 ИНЖ", 2, Arrays.asList("11 ИНЖ-1", "11 ИНЖ-2")),
     EN_11("11 ЕН", 3, Arrays.asList("11 ЕН-1", "11 ЕН-2")),
     IF_11("11 ИФ", 4, Arrays.asList("11 ИФ-1", "11 ИФ-2")),
-    SP_11("11 СП", 5, Arrays.asList("11 СП-1", "11 СП-3")),
+    SP_11("11 СП", 5, Arrays.asList("11 СП-1", "11 СП-2", "11 СП-3")),
     ALL_10("10 ALL", 0, new ArrayList<String>()),
     ALL_11("11 ALL", 0, new ArrayList<String>())
 
@@ -40,7 +40,7 @@ public enum Classes {
                 return clazz;
             }
         }
-        throw new Exception("Not found class Enum");
+        throw new Exception("Not found class Enum: " + alias);
     }
 
     public static Boolean checkAllIn(List<String> list) {
